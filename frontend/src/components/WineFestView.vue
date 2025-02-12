@@ -5,5 +5,4 @@ import SubHeadline from './SubHeadline.vue'
 
 <template>
     <Headline title="Weinfest"></Headline>
-    
 </template>

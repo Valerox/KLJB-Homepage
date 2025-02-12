@@ -6,6 +6,7 @@ import ImpressumView from './components/ImpressumView.vue'
 import DataPrivacyView from './components/DataPrivacyView.vue'
 import WineFestView from './components/WineFestView.vue'
 import ContactView from './components/ContactView.vue'
+import CalenderView from './components/CalenderView.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -14,6 +15,7 @@ const routes = [
   { path: '/dataprivacy', component: DataPrivacyView },
   { path: '/winefest', component: DataPrivacyView },
   { path: '/contact', component: ContactView },
+  { path: '/events', component: CalenderView },
 ]
 
 export default createRouter({

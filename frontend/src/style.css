@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --color-primary: #4CAF50;  /* Ein frisches Grün als Platzhalter */
+    --color-secondary: #FF9800;  /* Ein warmes Orange */
+  }

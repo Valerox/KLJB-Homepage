@@ -1,35 +1,63 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import Headline from './Headline.vue'
-const latestEvents = ref([
-    {name: "72h Aktion", path: "/src/assets/72h_aktion.jpg", date: "18.04.2024 - 21.04 2024"},
-    {name: "Altkleidersammlung", path: "/src/assets/altkleidersammlung.jpg", date: "04.05.2024"},
-    {name: "Big Bunny Party", path: "/src/assets/big_bunny_party.jpg", date: "20.04.2023"},
-    {name: "Burschenball Pilling", path: "/src/assets/burschenball_pilling.jpg", date: "20.04.2023"},
-    {name: "Dorffasching", path: "/src/assets/dorffasching.jpg", date: "20.04.2023"},
-    {name: "Fahnenweih Illkofen", path: "/src/assets/fahnenweih_illkofen.jpg", date: "20.04.2023"},
-    {name: "Gewölbeparty Sünching", path: "/src/assets/gewoelbeparty_suenching.jpg", date: "20.04.2023"},
-    {name: "Lebendkicker", path: "/src/assets/lebendkicker.jpg", date: "20.04.2023"},
-    {name: "Ostersonntagsmeiern", path: "/src/assets/ostersonntagsmeiern.jpg", date: "20.04.2023"},
-    {name: "Silvesterparty", path: "/src/assets/silvesterparty.jpg", date: "20.04.2023"},
-    {name: "Starkbierfest", path: "/src/assets/starkbierfest.jpg", date: "20.04.2024"},
-    {name: "Skifahrt", path: "/src/assets/skifahrt.jpg", date: "20.04.2024"}
-])
+import VueEasyLightbox from 'vue-easy-lightbox'
+import { useEventStore } from '../stores/eventStore'
+
+const eventStore = useEventStore();
+const latestEvents = computed(() => eventStore.latestEvents)
+
+// Für Lightbox
+const imageUrls = latestEvents.value.map(img => img.path)
+const lightboxVisible = ref(false)
+const lightboxIndex = ref(0)
+
+// Lightbox öffnen
+const openLightbox = (index) => {
+    console.log(index)
+    lightboxIndex.value = index
+    lightboxVisible.value = true
+}
 </script>
 
 
-
-
-
-
-
 <template>
-    <Headline title="Aktuellles"></Headline>
-    <div class="border grid grid-cols-2 gap-4 justify-between">
-        <div v-for="event in latestEvents" class="border">
-            <h2 class="text-center mb-4 text-3xl font-semibold leading-none tracking-tight text-gray-900 md:text-4xl ">{{ event.name }}</h2>
-            <img :src="event.path" class="h-[550px] ml-auto mr-auto">
-            <h3 class="text-center mb-4 leading-none font-semibold tracking-tight text-gray-900 md:text-3xl">{{ event.date }}</h3>
+    <div class="p-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-primary mb-6">Unsere Galerie</h2>
+
+        <!-- Responsive Grid mit Lazy Loading und Lightbox -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div 
+        v-for="(event, index) in latestEvents" 
+        :key="index" 
+        class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+        @click="openLightbox(index)"
+      >
+        <img 
+          :src="event.path" 
+          :alt="event.name" 
+          class="w-full h-48 object-cover"
+        />
+        <div class="p-4">
+          <h3 class="text-lg font-semibold text-gray-800">{{ event.name }}</h3>
+          <p class="text-sm text-gray-600">{{ event.name }}</p>
         </div>
+      </div>
+    </div>
+
+        <vue-easy-lightbox :visible="lightboxVisible" :imgs="imageUrls" :index="lightboxIndex"
+            @hide="lightboxVisible = false" />
     </div>
 </template>
+
+
+<style scoped>
+/* Sanfte Hover-Effekte für mehr Tiefe */
+img {
+    transition: transform 0.3s ease-in-out;
+}
+
+img:hover {
+    transform: scale(1.03);
+}
+</style>;
