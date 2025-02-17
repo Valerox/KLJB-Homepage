@@ -1,3 +1,4 @@
+import "primeicons/primeicons.css";
 import { createApp } from 'vue'
 import './style.css'
 import router from './router'

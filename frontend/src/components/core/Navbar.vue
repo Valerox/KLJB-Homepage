@@ -7,7 +7,7 @@ const toggleMenu = () => {
 }
 </script>
 <template>
-    <nav class="bg-primary text-white p-4 shadow-md relative z-50">
+    <nav class="bg-primary text-white p-4 shadow-md z-50 sticky top-0">
         <!-- z-50 sorgt dafür, dass die Navbar oben bleibt -->
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold">Landjugend</h1>

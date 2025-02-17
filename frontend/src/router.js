@@ -1,4 +1,4 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter } from 'vue-router'
 
 import HomeView from './components/HomeView.vue'
 import LatestView from './components/LatestView.vue'
@@ -7,6 +7,9 @@ import DataPrivacyView from './components/DataPrivacyView.vue'
 import WineFestView from './components/WineFestView.vue'
 import ContactView from './components/ContactView.vue'
 import CalenderView from './components/CalenderView.vue'
+import About from './components/About.vue'
+import AdminPage from './components/AdminPage.vue'
+import AdminEventList from './components/AdminEventList.vue'
 
 const routes = [
   { path: '/', component: HomeView },
@@ -16,10 +19,13 @@ const routes = [
   { path: '/winefest', component: DataPrivacyView },
   { path: '/contact', component: ContactView },
   { path: '/events', component: CalenderView },
+  { path: '/about', component: About },
+  { path: '/admin', component: AdminPage },
+  { path: '/admin/events', component: AdminEventList },
 ]
 
 export default createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     // always scroll to top

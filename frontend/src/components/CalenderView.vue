@@ -4,49 +4,43 @@
 
         <!-- Kalender -->
         <div class="bg-white shadow-lg rounded-xl p-6 max-w-5xl mx-auto border-2 border-primary">
-            <FullCalendar :options="calendarOptions" class="w-full" />
+            <FullCalendar ref="calendar" :options="calendarOptions" class="w-full" />
         </div>
 
-        <!-- PrimeVue Dialog (Popup) -->
-        <Dialog v-model:visible="showDialog" modal header="Events an diesem Tag" class="max-w-lg w-full">
-            <div v-if="selectedEvents.length > 0">
-                <ul class="mt-4 space-y-3">
-                    <li v-for="event in selectedEvents" :key="event.id"
-                        class="p-4 bg-primary text-white rounded-lg shadow">
-                        <h4 class="text-lg font-bold">{{ event.title }}</h4>
-                        <p class="text-sm">{{ event.date }}</p>
-                    </li>
-                </ul>
-            </div>
-            <div v-else class="text-gray-600 text-center p-4">
-                Keine Events für diesen Tag.
-            </div>
-        </Dialog>
+        <EventPopup ref="eventPopup" />
     </section>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import Dialog from 'primevue/dialog'
+import EventPopup from './EventPopup.vue'
+import { useEventStore } from '../stores/eventStore'
 
-const events = ref([
-    { id: 1, title: 'Frühlingsfest', date: '2025-02-15' },
-    { id: 2, title: 'Sommerparty', date: '2024-06-20' },
-    { id: 3, title: 'Weihnachtsmarkt', date: '2024-12-10' },
-    { id: 4, title: 'Vereinsversammlung', date: '2024-03-15' }
-])
+const eventStore = useEventStore();
+const events = computed(() => eventStore.events);
 
-const showDialog = ref(false)
-const selectedDate = ref('')
-const selectedEvents = ref([])
+const calendar = ref(null);
+const eventPopup = ref(null);
 
+watch(events, (newEvents) => {
+    if (calendar.value) {
+        let calendarApi = calendar.value.getApi();
+        calendarApi.removeAllEvents(); // Alte Events entfernen
+        console.log(newEvents);
+        calendarApi.addEventSource(newEvents); // Neue Events setzen
+    }
+});
 const handleDateClick = (info) => {
-    selectedDate.value = info.dateStr
-    selectedEvents.value = events.value.filter(event => event.date === info.dateStr)
-    showDialog.value = true
+    // Filtere alle Events für das angeklickte Datum
+    const eventsOnDate = events.value.filter(event => event.date === info.dateStr);
+
+    if (eventsOnDate.length > 0) {
+        eventPopup.value.showEvents(info.dateStr, eventsOnDate);
+    }
 }
 
 const calendarOptions = ref({

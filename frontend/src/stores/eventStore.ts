@@ -1,12 +1,18 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import axios from "axios";
+import { Event } from "../types/Event";
 
 export const useEventStore = defineStore("event", () => {
+  const api = axios.create({
+    baseURL: "http://localhost:5000/",
+  });
+
   const latestEvents = ref([
     {
       name: "72h Aktion",
       path: "/src/assets/72h_aktion.jpg",
-      date: "18.04.2024 - 21.04 2024",
+      date: "18.04.2024",
     },
     {
       name: "Altkleidersammlung",
@@ -61,14 +67,66 @@ export const useEventStore = defineStore("event", () => {
     { name: "Skifahrt", path: "/src/assets/skifahrt.jpg", date: "20.04.2024" },
   ]);
 
-  const upcomingEvents = ref([
-    { id: 1, title: 'Frühlingsfest', date: '15. März 2024', description: 'Ein tolles Fest mit Musik und Tanz!', image: 'https://picsum.photos/600/400?random=1' },
-    { id: 2, title: 'Sommerparty', date: '20. Juni 2024', description: 'Grillen, Musik und Spaß am See!', image: '' },
-    { id: 3, title: 'Weihnachtsmarkt', date: '10. Dezember 2024', description: 'Gemütliche Atmosphäre mit Glühwein.', image: 'https://picsum.photos/600/400?random=3' },
-  ])
+  const upcomingEvents = computed(() => {
+    const today = new Date().toISOString().split("T")[0];
+    return events.value
+      .filter((item) => item.date > today)
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(0, 3);
+  });
 
+  const events = ref<Event[]>([]);
+
+  async function addEvent(event: Event) {
+    console.log("addEvent", event);
+    try {
+      await api.post("/events", event);
+      console.log("event erfolgreich gespeichert", event);
+    } catch (error) {
+      console.error("Fehler beim Speichern des Events:", error);
+    }
+  }
+
+  async function editEvent(event: Event) {
+    try {
+      await api.put(`/events/${event.id}`, event);
+    } catch (error) {
+      console.error("Fehler beim Speichern:", error);
+    }
+  }
+
+  async function deleteEvent(eventId: number) {
+    try {
+      await api.delete(`/events/${eventId}`);
+    } catch (error) {
+      console.error("Fehler beim Löschen:", error);
+    }
+  }
+
+  async function getEvents() {
+    try {
+      const response = await api.get("/events");
+      console.log("Events geladen:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Fehler beim Laden der Events:", error);
+    }
+  }
+
+  function fetchEvents() {
+    getEvents().then((data) => {
+      events.value = data;
+    });
+  }
+  fetchEvents();
+  setInterval(fetchEvents, 30000);
   return {
     latestEvents,
     upcomingEvents,
+    events,
+    addEvent,
+    editEvent,
+    deleteEvent,
+    getEvents,
   };
 });

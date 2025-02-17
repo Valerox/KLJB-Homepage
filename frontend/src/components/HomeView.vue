@@ -6,9 +6,8 @@
       <div class="bg-black bg-opacity-50 p-8 rounded-xl">
         <h1 class="text-4xl md:text-6xl font-bold mb-4">Willkommen bei der Landjugend</h1>
         <p class="text-lg md:text-2xl mb-6">Gemeinschaft, Tradition und Spaß – Sei dabei!</p>
-        <button class="bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-full shadow-lg transition">
-          Mehr erfahren
-        </button>
+        <router-link to="/about" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-full shadow-lg transition">Über
+          uns</router-link>
       </div>
     </section>
 
@@ -36,7 +35,7 @@
           <!-- Falls ein Bild existiert, wird es angezeigt -->
           <img 
             v-if="event.image" 
-            :src="event.image" 
+            :src="'data:image/jpeg;base64,' + event.image" 
             :alt="event.title" 
             class="w-full h-48 object-cover"
           />

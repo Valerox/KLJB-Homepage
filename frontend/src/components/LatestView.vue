@@ -14,7 +14,6 @@ const lightboxIndex = ref(0)
 
 // Lightbox öffnen
 const openLightbox = (index) => {
-    console.log(index)
     lightboxIndex.value = index
     lightboxVisible.value = true
 }
